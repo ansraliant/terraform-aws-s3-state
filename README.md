@@ -9,7 +9,9 @@ You will need a `main.tf` to call this module with the correct parameters.
 To use this module out-of-the-box, without changing the default behaviour
 
 ```HCL
-provider "aws" {}
+provider "aws" {
+  region = "ap-northeast-1"
+}
 
 module "remote_state" {
   source = "ansraliant/s3-state/aws"
@@ -20,13 +22,13 @@ module "remote_state" {
 }
 ```
 
-### Full Config Example
-How to use with full config
+### Advanced Config Example
+How to use with advanced config
 
 ```HCL
 locals {
   prefix  = "myproject"
-  profile = "default"
+  profile = "my-aws-profile"
   region  = "ap-northeast-1"
 
   states = {

@@ -1,6 +1,6 @@
 # Terraform Remote State Config Module
 
-This module creates a bucket to hold the remote state files of terraform and a dynamo db table for the locks.
+This module creates a bucket to hold the remote state files of terraform, a dynamo db table for the locks and automatically generates backend configuration files.
 
 ## How to Use
 You will need a `main.tf` to call this module with the correct parameters.
@@ -9,7 +9,7 @@ Example:
 ```HCL
 locals {
   prefix  = "myproject"
-  profile = "aws-profile"
+  profile = "default"
   region  = "ap-northeast-1"
 
   states = {
@@ -30,7 +30,6 @@ provider "aws" {
 
 module "remote_state" {
   source  = "ansraliant/s3-state/aws"
-  version = ">= 1.0.0"
 
   profile        = local.profile
   bucket_name    = local.bucket_name

@@ -4,7 +4,24 @@ This module creates a bucket to hold the remote state files of terraform, a dyna
 
 ## How to Use
 You will need a `main.tf` to call this module with the correct parameters.
-Example:
+
+### Simple Example
+To use this module out-of-the-box, without changing the default behaviour
+
+```HCL
+provider "aws" {}
+
+module "remote_state" {
+  source = "ansraliant/s3-state/aws"
+
+  bucket_name    = "mybucket"
+  dynamodb_table = "mydynamodb"
+  states         = { infra = "../backend.tf.json" }
+}
+```
+
+### Full Config Example
+How to use with full config
 
 ```HCL
 locals {

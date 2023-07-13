@@ -1,9 +1,18 @@
+locals {
+  states = { for state, file in var.states :
+    state => {
+      key  = "${state}/terraform.tfstate"
+      file = file
+    }
+  }
+}
+
 data "aws_region" "this" {}
 
 resource "local_file" "backend_config" {
-  for_each = var.states
+  for_each = local.states
 
-  filename        = each.value
+  filename        = each.value.file
   file_permission = "0664"
 
   content = jsonencode({
@@ -14,7 +23,7 @@ resource "local_file" "backend_config" {
           region  = data.aws_region.this.name
 
           bucket = var.bucket_name
-          key    = "${each.key}/terraform.tfstate"
+          key    = each.value.key
 
           dynamodb_table = var.dynamodb_table
 

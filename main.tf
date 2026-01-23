@@ -19,9 +19,11 @@ resource "local_file" "backend_config" {
     terraform = {
       backend = {
         s3 = merge(
-          {
+          var.profile != null ? {
             profile = var.profile
-            region  = data.aws_region.this.name
+          } : null,
+          {
+            region = data.aws_region.this.name
 
             bucket = var.bucket_name
             key    = each.value.key

@@ -1,7 +1,9 @@
 variable "profile" {
   type = string
 
-  default = "default"
+  default = null
+
+  description = "While optional it is recommented to specify the AWS profile to avoid accidentally deploying to the wrong account."
 }
 
 variable "bucket_name" {

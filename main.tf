@@ -18,17 +18,23 @@ resource "local_file" "backend_config" {
   content = jsonencode({
     terraform = {
       backend = {
-        s3 = {
-          profile = var.profile
-          region  = data.aws_region.this.name
+        s3 = merge(
+          {
+            profile = var.profile
+            region  = data.aws_region.this.name
 
-          bucket = var.bucket_name
-          key    = each.value.key
+            bucket = var.bucket_name
+            key    = each.value.key
 
-          dynamodb_table = var.dynamodb_table
-
-          encrypt = true
-        }
+            encrypt = true
+          },
+          var.use_s3_native_locking ? {
+            use_lockfile = true
+          } : null,
+          var.dynamodb_table != null ? {
+            dynamodb_table = var.dynamodb_table
+          } : null,
+        )
       }
     }
   })

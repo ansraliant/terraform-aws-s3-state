@@ -1,5 +1,5 @@
 output "dynamodb_table_arn" {
-  value = aws_dynamodb_table.lock.arn
+  value = var.dynamodb_table == null ? null : one(aws_dynamodb_table.lock).arn
 }
 
 output "s3_bucket_arn" {

@@ -1,29 +1,29 @@
 # Terraform Remote State Config Module
 
-This module creates a bucket to hold the remote state files of terraform, a dynamo db table for the locks and automatically generates backend configuration files.
+This module creates a bucket to hold the state files of Terraform/OpenTofu and automatically generates backend configuration files. Optionally, it can also create a DynamoDB table for state locking for compatibility with older versions of Terraform/OpenTofu.
 
 ## How to Use
+
+See [variables.tf](variables.tf) for all configuration options.
+
 You will need a `main.tf` to call this module with the correct parameters.
 
 ### Simple Example
-To use this module out-of-the-box, without changing the default behaviour
 
 ```HCL
 provider "aws" {
   region = "ap-northeast-1"
 }
 
-module "remote_state" {
+module "s3_state" {
   source = "ansraliant/s3-state/aws"
 
   bucket_name    = "mybucket"
-  dynamodb_table = "mydynamodb"
   states         = { infra = "../backend.tf.json" }
 }
 ```
 
-### Advanced Config Example
-How to use with advanced config
+### Advanced Example
 
 ```HCL
 locals {
@@ -37,7 +37,6 @@ locals {
   }
 
   bucket_name    = "${local.prefix}-${substr(md5(data.aws_caller_identity.this.account_id), 0, 16)}"
-  dynamodb_table = local.prefix
 }
 
 data "aws_caller_identity" "this" {}
@@ -47,14 +46,11 @@ provider "aws" {
   region  = local.region
 }
 
-module "remote_state" {
+module "s3_state" {
   source  = "ansraliant/s3-state/aws"
 
   profile        = local.profile
   bucket_name    = local.bucket_name
-  dynamodb_table = local.dynamodb_table
   states         = local.states
 }
 ```
-
-You can either hardcode, use tfvars, whatever works for you

@@ -21,7 +21,7 @@ resource "local_file" "backend_config" {
         s3 = merge(
           {
             profile = var.profile
-            region  = data.aws_region.this.name
+            region  = data.aws_region.this.region
 
             bucket = var.bucket_name
             key    = each.value.key

@@ -29,3 +29,16 @@ variable "dynamodb_table" {
 
   description = "Use DynamoDB table for state locking. This is useful only for compatibility with Terraform/OpenTofu prior to 1.10.0."
 }
+
+variable "lifecycle_config" {
+  type = object({
+    name                      = optional(string, "cleanup-old-versions")
+    noncurrent_days           = optional(number, 30)
+    newer_noncurrent_versions = optional(number, 10)
+    abort_multipart_days      = optional(number, 7)
+  })
+
+  default     = null
+
+  description = "Configuration for the S3 bucket lifecycle configuration. This is used to automatically clean up old versions of the state files and abort incomplete multipart uploads. It is recommended to enable this to avoid unnecessary storage costs."
+}

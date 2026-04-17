@@ -48,3 +48,27 @@ resource "aws_s3_bucket_versioning" "this" {
     status = "Enabled"
   }
 }
+
+resource "aws_s3_bucket_lifecycle_configuration" "state_cleanup" {
+  count = var.lifecycle_config != null ? 1 : 0
+
+  bucket = aws_s3_bucket.this.id
+
+  rule {
+    id     = var.lifecycle_config.name
+    status = "Enabled"
+
+    noncurrent_version_expiration {
+      noncurrent_days           = var.lifecycle_config.noncurrent_days
+      newer_noncurrent_versions = var.lifecycle_config.newer_noncurrent_versions
+    }
+
+    abort_incomplete_multipart_upload {
+      days_after_initiation = var.lifecycle_config.abort_multipart_days
+    }
+
+    expiration {
+      expired_object_delete_marker = true
+    }
+  }
+}
